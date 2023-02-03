@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="cuckooM">
+        <sql>
+            -- 用户表
+            CREATE TABLE IF NOT EXISTS tbl_user (
+                id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
+                display_name VARCHAR(128) NOT NULL,                  -- 显示名称
+                user_name VARCHAR(64) NOT NULL UNIQUE,               -- 登录名
+                passwd VARCHAR(256) NOT NULL,                        -- 密码
+                create_time TIMESTAMP NOT NULL                       -- 创建时间
+            );
+            -- 增加 admin 用户
+            INSERT INTO tbl_user(display_name, user_name, passwd, create_time) VALUES(
+                'admin', 'admin', '$2a$10$ymylTX6GKyTdEGcFqC4s2.P/FvtXX51W2p81ActaG.hXuq8qrBnU6', NOW());
+        </sql>
+    </changeSet>
+</databaseChangeLog>
