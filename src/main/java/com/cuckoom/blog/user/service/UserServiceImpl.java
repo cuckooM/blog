@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Nullable
     public UserDTO findByUserName(@NonNull String userName) {
-        User entity = userRepository.findTopByUserName(userName);
+        User entity = userRepository.findTopByUserNameAndDeletedFalse(userName);
         if (null != entity) {
             UserDTO result = new UserDTO();
             BeanUtils.copyProperties(entity, result);

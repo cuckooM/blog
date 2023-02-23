@@ -15,11 +15,11 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>,
     JpaSpecificationExecutor<User> {
 
     /**
-     * 根据登录名查询用户
+     * 根据登录名查询未删除用户
      * @param userName 登录名
      * @return 结果
      */
     @Nullable
-    User findTopByUserName(@NonNull String userName);
+    User findTopByUserNameAndDeletedFalse(@NonNull String userName);
 
 }

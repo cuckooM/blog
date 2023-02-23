@@ -51,7 +51,8 @@ public class UserDetailsAuthenticationProvider extends AbstractUserDetailsAuthen
             // 用户不存在
             throw new UsernameNotFoundException(String.format("User whose name is %s is not found.", username));
         }
-        return new TokenUser(user.getUserName(), user.getDisplayName(), user.getPasswd(), new ArrayList<>());
+        return new TokenUser(user.getId(), user.getUserName(), user.getDisplayName(), user.getPasswd(),
+                new ArrayList<>());
     }
 
 }
