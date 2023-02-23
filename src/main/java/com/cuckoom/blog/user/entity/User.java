@@ -1,5 +1,8 @@
 package com.cuckoom.blog.user.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,6 +19,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tbl_user")
+@Getter
+@Setter
 public class User implements Serializable {
 
     /** 序列化 ID */
@@ -42,43 +47,8 @@ public class User implements Serializable {
     @Column(name = "create_time")
     private Date createTime;
 
-    public Long getId() {
-        return id;
-    }
+    /** 是否已删除 */
+    @Column(name = "deleted")
+    private boolean deleted;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPasswd() {
-        return passwd;
-    }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }
