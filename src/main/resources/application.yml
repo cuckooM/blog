@@ -1,13 +1,15 @@
 server:
   port: 8080
 spring:
+  profiles:
+    active: prod
   application:
     name: blog
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://127.0.0.1:5432/blog
-    username:
-    password:
+    username: cuckooM
+    password: cuckooM
   liquibase:
     change-log: classpath:/db/changelog/changelog.xml
   jpa:
