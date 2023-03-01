@@ -40,5 +40,6 @@ tasks.named('test') {
 }
 
 bootJar {
-    exclude("application-dev.yml")
+    exclude("application-prod.yml")
+    archiveName("blog.jar")
 }
