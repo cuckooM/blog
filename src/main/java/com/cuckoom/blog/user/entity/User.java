@@ -40,7 +40,6 @@ public class User implements Serializable {
     private String userName;
 
     /** 密码 */
-    @Column(name = "passwd")
     private String passwd;
 
     /** 创建时间 */
@@ -48,7 +47,6 @@ public class User implements Serializable {
     private Date createTime;
 
     /** 是否已删除 */
-    @Column(name = "deleted")
     private boolean deleted;
 
 }

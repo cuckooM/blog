@@ -6,6 +6,8 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.hibernate.validator.constraints.Length;
+
 /**
  * 博客 DTO 实体
  * @author cuckooM
@@ -19,6 +21,7 @@ public class BlogDTO implements Serializable {
     private Long id;
 
     /** 标题 */
+    @Length(max = 128)
     private String title;
 
     /** 内容 */
