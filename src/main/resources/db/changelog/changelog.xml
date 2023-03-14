@@ -2,12 +2,20 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
-    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="1" author="cuckooM">
         <sql>
+            -- 角色表
+            CREATE TABLE IF NOT EXISTS tbl_role (
+                id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
+                name VARCHAR(128) NOT NULL,                          -- 名称
+                permissions VARCHAR(32)[],                           -- 权限列表
+                create_time TIMESTAMP NOT NULL,                      -- 创建时间
+                deleted BOOLEAN NOT NULL DEFAULT FALSE               -- 是否已删除
+            );
+            -- 增加管理员角色
+            INSERT INTO TBL_ROLE(name, permissions, create_time) VALUES ('MANAGER', ARRAY['ROLE_MANAGER'], NOW());
             -- 用户表
             CREATE TABLE IF NOT EXISTS tbl_user (
                 id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
@@ -18,10 +26,16 @@
                 deleted BOOLEAN NOT NULL DEFAULT FALSE               -- 是否已删除
             );
             -- 增加 admin 用户
-            INSERT INTO tbl_user(display_name, user_name, passwd, create_time) VALUES(
+            INSERT INTO tbl_user(display_name, user_name, passwd, create_time) VALUES (
                 'admin', 'admin', '$2a$10$ymylTX6GKyTdEGcFqC4s2.P/FvtXX51W2p81ActaG.hXuq8qrBnU6', NOW());
+            -- 角色和用户的中间表
+            CREATE TABLE IF NOT EXISTS tbl_role_user (
+                user_id BIGINT NOT NULL,                             -- 用户 ID
+                role_id BIGINT NOT NULL                              -- 角色 ID
+            );
+            INSERT INTO tbl_role_user(user_id, role_id) VALUES (1, 1);
             -- 博客表
-            CREATE TABLE IF NOT EXISTS tbl_user (
+            CREATE TABLE IF NOT EXISTS tbl_blog (
                 id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
                 title VARCHAR(128) NOT NULL,                         -- 标题
                 content TEXT NOT NULL,                               -- 内容

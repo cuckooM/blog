@@ -1,9 +1,12 @@
 package com.cuckoom.blog.security;
 
+import java.security.Principal;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,4 +43,15 @@ public class SecurityUtils {
 
       return Optional.ofNullable(username);
    }
+
+   /**
+    * 获取用户 ID
+    * @param principal 用户登录信息
+    * @return 结果
+    */
+   @NonNull
+   public static Long getUserId(@NonNull Principal principal) {
+      return ((TokenUser) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUserId();
+   }
+
 }

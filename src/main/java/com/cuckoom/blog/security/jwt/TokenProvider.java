@@ -17,6 +17,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import com.cuckoom.blog.security.TokenUser;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -32,6 +34,10 @@ public class TokenProvider implements InitializingBean {
    private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
    private static final String AUTHORITIES_KEY = "auth";
+
+   private static final String USERID = "userId";
+
+   private static final String DISPLAY_NAME = "display_name";
 
    @Value("${jwt.base64-secret:ZmQ0ZGI5NjQ0MDQwY2I4MjMxY2Y3ZmI3MjdhN2ZmMjNhODViOTg1ZGE0NTBjMGM4NDA5NzYxMjdjOWMwYWRmZTBlZjlhNGY3ZTg4Y2U3YTE1ODVkZDU5Y2Y3OGYwZWE1NzUzNWQ2YjFjZDc0NGMxZWU2MmQ3MjY1NzJmNTE0MzI=}")
    private String base64Secret;
@@ -49,6 +55,9 @@ public class TokenProvider implements InitializingBean {
    }
 
    public String createToken(Authentication authentication, boolean rememberMe) {
+
+      TokenUser tokenUser = (TokenUser) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal();
+
       String authorities = authentication.getAuthorities().stream()
          .map(GrantedAuthority::getAuthority)
          .collect(Collectors.joining(","));
@@ -62,11 +71,13 @@ public class TokenProvider implements InitializingBean {
       }
 
       return Jwts.builder()
-         .setSubject(authentication.getName())
-         .claim(AUTHORITIES_KEY, authorities)
-         .signWith(key, SignatureAlgorithm.HS512)
-         .setExpiration(validity)
-         .compact();
+          .setSubject(authentication.getName())
+          .claim(AUTHORITIES_KEY, authorities)
+          .claim(USERID, tokenUser.getUserId())
+          .claim(DISPLAY_NAME, tokenUser.getDisplayName())
+          .signWith(key, SignatureAlgorithm.HS512)
+          .setExpiration(validity)
+          .compact();
    }
 
    public Authentication getAuthentication(String token) {
@@ -74,13 +85,16 @@ public class TokenProvider implements InitializingBean {
          .setSigningKey(key)
          .parseClaimsJws(token)
          .getBody();
+      Object obj = claims.get(USERID);
+      Object obj2 = claims.get(DISPLAY_NAME);
 
       Collection<? extends GrantedAuthority> authorities =
          Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 
-      User principal = new User(claims.getSubject(), "", authorities);
+      User principal = new TokenUser(Long.parseLong(claims.get(USERID).toString()), claims.getSubject(),
+          claims.get(DISPLAY_NAME).toString(),"", authorities);
 
       return new UsernamePasswordAuthenticationToken(principal, token, authorities);
    }
