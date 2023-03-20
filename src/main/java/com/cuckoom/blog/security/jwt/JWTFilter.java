@@ -18,14 +18,19 @@ import org.springframework.web.filter.GenericFilterBean;
 /**
  * Filters incoming requests and installs a Spring Security principal if a header corresponding to a valid user is
  * found.
+ * @author cuckooM
  */
 public class JWTFilter extends GenericFilterBean {
 
    private static final Logger LOG = LoggerFactory.getLogger(JWTFilter.class);
 
-   public static final String AUTHORIZATION_HEADER = "Authorization";
+   /** 请求头 Authorization */
+   public static final String HEADER_AUTHORIZATION = "Authorization";
 
-   private TokenProvider tokenProvider;
+   /** Token 前缀 */
+   public static final String TOKEN_PREFIX = "Bearer ";
+
+   private final TokenProvider tokenProvider;
 
    public JWTFilter(TokenProvider tokenProvider) {
       this.tokenProvider = tokenProvider;
@@ -36,22 +41,22 @@ public class JWTFilter extends GenericFilterBean {
       throws IOException, ServletException {
       HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
       String jwt = resolveToken(httpServletRequest);
-      String requestURI = httpServletRequest.getRequestURI();
+      String uri = httpServletRequest.getRequestURI();
 
       if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
          Authentication authentication = tokenProvider.getAuthentication(jwt);
          SecurityContextHolder.getContext().setAuthentication(authentication);
-         LOG.debug("set Authentication to security context for '{}', uri: {}", authentication.getName(), requestURI);
+         LOG.debug("set Authentication to security context for '{}', uri: {}", authentication.getName(), uri);
       } else {
-         LOG.debug("no valid JWT token found, uri: {}", requestURI);
+         LOG.debug("no valid JWT token found, uri: {}", uri);
       }
 
       filterChain.doFilter(servletRequest, servletResponse);
    }
 
    private String resolveToken(HttpServletRequest request) {
-      String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-      if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+      String bearerToken = request.getHeader(HEADER_AUTHORIZATION);
+      if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
          return bearerToken.substring(7);
       }
       return null;
