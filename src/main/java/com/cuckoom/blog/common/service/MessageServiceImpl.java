@@ -21,11 +21,11 @@ public class MessageServiceImpl implements MessageService {
     private final MessageSource messageSource;
 
     /** 默认语言 */
-    private Locale locale = Locale.CHINA;
+    private final Locale locale = Locale.CHINA;
 
     @Override
     public String getMessage(@NonNull String code) {
-        return getMessage(code, null);
+        return messageSource.getMessage(code, null, locale);
     }
 
     @Override
