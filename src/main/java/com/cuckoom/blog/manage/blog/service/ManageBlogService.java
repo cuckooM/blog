@@ -1,6 +1,6 @@
-package com.cuckoom.blog.manage.service;
+package com.cuckoom.blog.manage.blog.service;
 
-import com.cuckoom.blog.manage.dto.BlogDTO;
+import com.cuckoom.blog.manage.blog.dto.BlogDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

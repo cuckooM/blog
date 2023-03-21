@@ -1,11 +1,14 @@
-package com.cuckoom.blog.manage.service;
+package com.cuckoom.blog.manage.blog.service;
 
 import com.cuckoom.blog.common.service.MessageService;
 import com.cuckoom.blog.exception.PayloadException;
-import com.cuckoom.blog.manage.dto.BlogDTO;
-import com.cuckoom.blog.manage.entity.Blog;
-import com.cuckoom.blog.manage.repository.BlogRepository;
-import com.cuckoom.blog.manage.utils.BlogUtils;
+import com.cuckoom.blog.manage.blog.dto.BlogDTO;
+import com.cuckoom.blog.manage.blog.entity.Blog;
+import com.cuckoom.blog.manage.blog.repository.BlogRepository;
+import com.cuckoom.blog.manage.blog.utils.BlogUtils;
+import com.cuckoom.blog.user.dto.UserDTO;
+import com.cuckoom.blog.user.service.UserService;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -35,6 +39,9 @@ public class ManageBlogServiceImpl implements ManageBlogService {
 
     /** 博客数据访问层接口 */
     private final BlogRepository blogRepository;
+
+    /** 用户业务逻辑层接口 */
+    private final UserService userService;
 
     /** 多语言资源支持 */
     private final MessageService messageService;
@@ -54,39 +61,52 @@ public class ManageBlogServiceImpl implements ManageBlogService {
             return query.where(predicate).getRestriction();
         };
         Page<Blog> page = blogRepository.findAll(spec, pageable);
+        // 查询用户
+        List<UserDTO> users = userService.findByIds(
+            page.getContent()
+                .stream()
+                .map(Blog::getAuthorId)
+                .collect(Collectors.toSet()));
+        // 返回数据
         return new PageImpl<>(page.getContent()
             .stream()
-            .map(BlogUtils::toDTO)
+            .map(item -> BlogUtils.toDTO(item, users))
             .collect(Collectors.toList()),
             page.getPageable(), page.getTotalElements());
     }
 
     @Override
     @NonNull
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public BlogDTO add(@NonNull BlogDTO dto, @NonNull Long userId) {
+        // 查询用户
+        UserDTO user = userService.findById(userId);
+        // 保存数据
         return BlogUtils.toDTO(
                 blogRepository.save(
-                        BlogUtils.create(dto, userId)));
+                        BlogUtils.create(dto, userId)), user);
     }
 
     @Override
     @NonNull
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public BlogDTO update(@NonNull Long id, @NonNull BlogDTO dto, @NonNull Long userId) {
         Blog original = findOrThrowException(id);
         if (!userId.equals(original.getAuthorId())) {
             // 非作者不允许此操作！
             throw new PayloadException(messageService.getMessage("manage.blog.update.author.require"));
         }
+        // 查询用户
+        UserDTO user = userService.findById(userId);
+        // 保存数据
         BlogUtils.copyProperties(dto, original);
         original.setUpdateTime(new Date());
         return BlogUtils.toDTO(
-                blogRepository.save(original));
+                blogRepository.save(original), user);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public void delete(@NonNull Long id, @NonNull Long userId) {
         Blog original = findOrThrowException(id);
         if (!userId.equals(original.getAuthorId())) {

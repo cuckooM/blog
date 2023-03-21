@@ -46,4 +46,21 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="2" author="cuckooM">
+        <sql>
+            -- 标签表
+            CREATE TABLE IF NOT EXISTS tbl_label (
+                id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
+                name VARCHAR(32) NOT NULL,                           -- 名称
+                deleted BOOLEAN NOT NULL DEFAULT FALSE               -- 是否已删除
+            );
+            -- 标签数据表
+            CREATE TABLE IF NOT EXISTS tbl_label_relation (
+                id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
+                label_id BIGINT NOT NULL,                            -- 标签 ID
+                entity_id BIGINT NOT NULL,                           -- 数据 ID
+                type int NOT NULL                                    -- 类型
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

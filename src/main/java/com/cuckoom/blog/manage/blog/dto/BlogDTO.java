@@ -1,4 +1,4 @@
-package com.cuckoom.blog.manage.dto;
+package com.cuckoom.blog.manage.blog.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.hibernate.validator.constraints.Length;
+
+import com.cuckoom.blog.user.dto.UserDTO;
 
 /**
  * 博客 DTO 实体
@@ -29,6 +31,9 @@ public class BlogDTO implements Serializable {
 
     /** 作者 ID */
     private Long authorId;
+
+    /** 作者 */
+    private UserDTO author;
 
     /** 创建时间 */
     private Date createTime;
