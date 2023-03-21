@@ -1,5 +1,8 @@
 package com.cuckoom.blog.user.service;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -26,5 +29,21 @@ public interface UserService {
      */
     @Nullable
     UserDTO findByUserName(@NonNull String userName);
+
+    /**
+     * 根据 ID 查询用户
+     * @param userId ID
+     * @return 结果
+     */
+    @Nullable
+    UserDTO findById(@NonNull Long userId);
+
+    /**
+     * 根据 ID 集合查询用户
+     * @param userIds ID 集合
+     * @return 结果
+     */
+    @NonNull
+    List<UserDTO> findByIds(@NonNull Collection<Long> userIds);
 
 }

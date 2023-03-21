@@ -1,8 +1,8 @@
-package com.cuckoom.blog.manage.api;
+package com.cuckoom.blog.manage.blog.api;
 
 import com.cuckoom.blog.common.PermissionConsts;
-import com.cuckoom.blog.manage.dto.BlogDTO;
-import com.cuckoom.blog.manage.service.ManageBlogService;
+import com.cuckoom.blog.manage.blog.dto.BlogDTO;
+import com.cuckoom.blog.manage.blog.service.ManageBlogService;
 import com.cuckoom.blog.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 

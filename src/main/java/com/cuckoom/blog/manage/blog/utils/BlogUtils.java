@@ -1,10 +1,14 @@
-package com.cuckoom.blog.manage.utils;
+package com.cuckoom.blog.manage.blog.utils;
 
-import com.cuckoom.blog.manage.dto.BlogDTO;
-import com.cuckoom.blog.manage.entity.Blog;
+import com.cuckoom.blog.manage.blog.dto.BlogDTO;
+import com.cuckoom.blog.manage.blog.entity.Blog;
+import com.cuckoom.blog.user.dto.UserDTO;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -46,12 +50,35 @@ public class BlogUtils {
     /**
      * 将数据库实体转化为 DTO 实体
      * @param entity 数据库实体
+     * @param user 用户
      * @return DTO 实体
      */
     @NonNull
-    public static BlogDTO toDTO(@NonNull Blog entity) {
+    public static BlogDTO toDTO(@NonNull Blog entity, @Nullable UserDTO user) {
         BlogDTO dto = new BlogDTO();
         BeanUtils.copyProperties(entity, dto);
+        dto.setAuthor(user);
+        return dto;
+    }
+
+    /**
+     * 将数据库实体转化为 DTO 实体
+     * @param entity 数据库实体
+     * @param users 用户列表
+     * @return DTO 实体
+     */
+    @NonNull
+    public static BlogDTO toDTO(@NonNull Blog entity, @Nullable Collection<UserDTO> users) {
+        BlogDTO dto = new BlogDTO();
+        BeanUtils.copyProperties(entity, dto);
+        if (null != users) {
+            for (UserDTO user : users) {
+                if (user.getId().equals(entity.getAuthorId())) {
+                    dto.setAuthor(user);
+                    break;
+                }
+            }
+        }
         return dto;
     }
 

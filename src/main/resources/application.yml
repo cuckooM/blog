@@ -1,13 +1,6 @@
 server:
   port: 8082
 spring:
-  profiles:
-    active: prod
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://127.0.0.1:5432/blog
-    username:
-    password:
   application:
     name: blog
   liquibase:

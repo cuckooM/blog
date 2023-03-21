@@ -2,7 +2,7 @@ package com.cuckoom.blog.user.dto;
 
 import java.io.Serializable;
 
-import org.springframework.data.annotation.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 用户 DTO 实体
@@ -23,7 +23,7 @@ public class UserDTO implements Serializable {
     private String userName;
 
     /** 密码 */
-    @Transient
+    @JsonIgnore
     private String passwd;
 
     public Long getId() {

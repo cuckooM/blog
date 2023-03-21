@@ -69,4 +69,7 @@ public class PayloadException extends RuntimeException {
         this.payload = payload;
     }
 
+    public Serializable getPayload() {
+        return payload;
+    }
 }
