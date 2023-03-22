@@ -1,7 +1,8 @@
-package com.cuckoom.blog.manage.label.utils;
+package com.cuckoom.blog.label.utils;
 
-import com.cuckoom.blog.manage.label.dto.LabelDTO;
-import com.cuckoom.blog.manage.label.entity.Label;
+import com.cuckoom.blog.label.entity.Label;
+import com.cuckoom.blog.label.dto.LabelDTO;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 

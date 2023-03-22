@@ -1,6 +1,6 @@
-package com.cuckoom.blog.manage.label.service;
+package com.cuckoom.blog.label.service;
 
-import com.cuckoom.blog.manage.label.dto.LabelDTO;
+import com.cuckoom.blog.label.dto.LabelDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;

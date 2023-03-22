@@ -61,6 +61,17 @@
                 entity_id BIGINT NOT NULL,                           -- 数据 ID
                 type int NOT NULL                                    -- 类型
             );
+            -- 博客讨论表
+            CREATE TABLE IF NOT EXISTS tbl_blog_discuss (
+                id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
+                content TEXT NOT NULL,                               -- 内容
+                blog_id BIGINT NOT NULL,                             -- 博客 ID
+                parent_id BIGINT,                                    -- 父讨论 ID
+                reply_id BIGINT,                                     -- 回复的讨论 ID
+                user_id BIGINT NOT NULL,                             -- 作者 ID
+                create_time TIMESTAMP NOT NULL,                      -- 创建时间
+                deleted BOOLEAN NOT NULL DEFAULT FALSE               -- 是否已删除
+            );
         </sql>
     </changeSet>
 </databaseChangeLog>

@@ -1,7 +1,7 @@
-package com.cuckoom.blog.manage.label.repository;
+package com.cuckoom.blog.label.repository;
 
-import com.cuckoom.blog.manage.blog.entity.Blog;
-import com.cuckoom.blog.manage.label.entity.Label;
+import com.cuckoom.blog.label.entity.Label;
+
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

@@ -1,11 +1,11 @@
-package com.cuckoom.blog.manage.blog.service;
+package com.cuckoom.blog.blog.service;
 
 import com.cuckoom.blog.common.service.MessageService;
 import com.cuckoom.blog.exception.PayloadException;
-import com.cuckoom.blog.manage.blog.dto.BlogDTO;
-import com.cuckoom.blog.manage.blog.entity.Blog;
-import com.cuckoom.blog.manage.blog.repository.BlogRepository;
-import com.cuckoom.blog.manage.blog.utils.BlogUtils;
+import com.cuckoom.blog.blog.dto.BlogDTO;
+import com.cuckoom.blog.blog.entity.Blog;
+import com.cuckoom.blog.blog.repository.BlogRepository;
+import com.cuckoom.blog.blog.utils.BlogUtils;
 import com.cuckoom.blog.user.dto.UserDTO;
 import com.cuckoom.blog.user.service.UserService;
 
@@ -35,7 +35,7 @@ import javax.persistence.criteria.Root;
  */
 @Service
 @RequiredArgsConstructor
-public class ManageBlogServiceImpl implements ManageBlogService {
+public class BlogServiceImpl implements BlogService {
 
     /** 博客数据访问层接口 */
     private final BlogRepository blogRepository;
