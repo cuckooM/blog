@@ -1,8 +1,8 @@
 package com.cuckoom.blog.manage.blog.api;
 
 import com.cuckoom.blog.common.PermissionConsts;
-import com.cuckoom.blog.manage.blog.dto.BlogDTO;
-import com.cuckoom.blog.manage.blog.service.ManageBlogService;
+import com.cuckoom.blog.blog.dto.BlogDTO;
+import com.cuckoom.blog.blog.service.BlogService;
 import com.cuckoom.blog.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +34,7 @@ import javax.annotation.security.RolesAllowed;
 public class ManageBlogController {
 
     /** 博客业务逻辑 */
-    private final ManageBlogService blogService;
+    private final BlogService blogService;
 
     /**
      * 分页查询数据

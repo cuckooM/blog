@@ -1,4 +1,4 @@
-package com.cuckoom.blog.manage.label.dto;
+package com.cuckoom.blog.label.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
-package com.cuckoom.blog.manage.blog.utils;
+package com.cuckoom.blog.blog.utils;
 
-import com.cuckoom.blog.manage.blog.dto.BlogDTO;
-import com.cuckoom.blog.manage.blog.entity.Blog;
+import com.cuckoom.blog.blog.dto.BlogDTO;
+import com.cuckoom.blog.blog.entity.Blog;
 import com.cuckoom.blog.user.dto.UserDTO;
 
 import org.springframework.beans.BeanUtils;

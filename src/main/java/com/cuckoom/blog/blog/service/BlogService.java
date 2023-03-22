@@ -1,6 +1,6 @@
-package com.cuckoom.blog.manage.blog.service;
+package com.cuckoom.blog.blog.service;
 
-import com.cuckoom.blog.manage.blog.dto.BlogDTO;
+import com.cuckoom.blog.blog.dto.BlogDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +11,7 @@ import org.springframework.lang.Nullable;
  * 博客业务逻辑层接口
  * @author cuckooM
  */
-public interface ManageBlogService {
+public interface BlogService {
 
     /**
      * 分页查询数据

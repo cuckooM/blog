@@ -1,4 +1,4 @@
-package com.cuckoom.blog.manage.blog.entity;
+package com.cuckoom.blog.blog.entity;
 
 import lombok.Getter;
 import lombok.Setter;

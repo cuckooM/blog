@@ -1,6 +1,6 @@
-package com.cuckoom.blog.manage.blog.repository;
+package com.cuckoom.blog.blog.repository;
 
-import com.cuckoom.blog.manage.blog.entity.Blog;
+import com.cuckoom.blog.blog.entity.Blog;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

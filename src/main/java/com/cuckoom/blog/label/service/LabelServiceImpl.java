@@ -1,11 +1,11 @@
-package com.cuckoom.blog.manage.label.service;
+package com.cuckoom.blog.label.service;
 
 import com.cuckoom.blog.common.service.MessageService;
 import com.cuckoom.blog.exception.PayloadException;
-import com.cuckoom.blog.manage.label.dto.LabelDTO;
-import com.cuckoom.blog.manage.label.entity.Label;
-import com.cuckoom.blog.manage.label.repository.LabelRepository;
-import com.cuckoom.blog.manage.label.utils.LabelUtils;
+import com.cuckoom.blog.label.dto.LabelDTO;
+import com.cuckoom.blog.label.entity.Label;
+import com.cuckoom.blog.label.repository.LabelRepository;
+import com.cuckoom.blog.label.utils.LabelUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
