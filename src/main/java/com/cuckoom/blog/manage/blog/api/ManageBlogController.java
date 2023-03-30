@@ -1,5 +1,6 @@
 package com.cuckoom.blog.manage.blog.api;
 
+import com.cuckoom.blog.blog.vo.BlogVO;
 import com.cuckoom.blog.common.PermissionConsts;
 import com.cuckoom.blog.blog.dto.BlogDTO;
 import com.cuckoom.blog.blog.service.BlogService;
@@ -43,7 +44,7 @@ public class ManageBlogController {
      * @return 结果
      */
     @GetMapping
-    public ResponseEntity<Page<BlogDTO>> page(@RequestParam(required = false) Long authorId, Pageable pageable) {
+    public ResponseEntity<Page<BlogVO>> page(@RequestParam(required = false) Long authorId, Pageable pageable) {
         return ResponseEntity.ok(blogService.page(pageable, authorId));
     }
 

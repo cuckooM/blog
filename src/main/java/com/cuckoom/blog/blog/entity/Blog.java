@@ -6,6 +6,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import com.cuckoom.blog.label.entity.Label;
 
 /**
  * 博客实体
@@ -42,6 +45,12 @@ public class Blog implements Serializable {
     /** 修改时间 */
     @Column(name = "update_time")
     private Date updateTime;
+
+    /** 标签 */
+    @ManyToMany(targetEntity = Label.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "tbl_label_relation",
+        joinColumns = @JoinColumn(name = "entity_id"), inverseJoinColumns = @JoinColumn(name = "label_id"))
+    private List<Label> labels;
 
     /** 是否已删除 */
     @Column(name = "deleted")
