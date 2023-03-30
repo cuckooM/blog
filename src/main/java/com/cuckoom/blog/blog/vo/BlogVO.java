@@ -1,30 +1,29 @@
-package com.cuckoom.blog.blog.dto;
+package com.cuckoom.blog.blog.vo;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import com.cuckoom.blog.label.dto.LabelDTO;
+import com.cuckoom.blog.user.dto.UserDTO;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
-
-import org.hibernate.validator.constraints.Length;
-
-import com.cuckoom.blog.user.dto.UserDTO;
-
 /**
- * 博客 DTO 实体
+ * 博客 VO 实体
  * @author cuckooM
  */
-@Setter
 @Getter
-public class BlogDTO implements Serializable {
-    private static final long serialVersionUID = 5853078103938166801L;
+@Setter
+public class BlogVO implements Serializable {
+    private static final long serialVersionUID = 3110904343856107185L;
 
     /** ID */
     private Long id;
 
     /** 标题 */
-    @Length(max = 128)
     private String title;
 
     /** 内容 */
@@ -45,4 +44,6 @@ public class BlogDTO implements Serializable {
     /** 标签 ID 集合 */
     private Set<Long> labelIds;
 
+    /** 标签 */
+    private List<LabelDTO> labels;
 }

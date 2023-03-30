@@ -1,11 +1,15 @@
 package com.cuckoom.blog.blog.service;
 
+import com.cuckoom.blog.blog.vo.BlogVO;
+import com.cuckoom.blog.common.entity.ModuleEnum;
 import com.cuckoom.blog.common.service.MessageService;
 import com.cuckoom.blog.exception.PayloadException;
 import com.cuckoom.blog.blog.dto.BlogDTO;
 import com.cuckoom.blog.blog.entity.Blog;
 import com.cuckoom.blog.blog.repository.BlogRepository;
 import com.cuckoom.blog.blog.utils.BlogUtils;
+import com.cuckoom.blog.label.entity.LabelRelation;
+import com.cuckoom.blog.label.service.LabelService;
 import com.cuckoom.blog.user.dto.UserDTO;
 import com.cuckoom.blog.user.service.UserService;
 
@@ -43,12 +47,15 @@ public class BlogServiceImpl implements BlogService {
     /** 用户业务逻辑层接口 */
     private final UserService userService;
 
+    /** 标签业务逻辑接口 */
+    private final LabelService labelService;
+
     /** 多语言资源支持 */
     private final MessageService messageService;
 
     @Override
     @NonNull
-    public Page<BlogDTO> page(@NonNull Pageable pageable, @Nullable Long authorId) {
+    public Page<BlogVO> page(@NonNull Pageable pageable, @Nullable Long authorId) {
         // 查询条件
         Specification<Blog> spec = (Root<Blog> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             query.distinct(true);
@@ -60,6 +67,7 @@ public class BlogServiceImpl implements BlogService {
             }
             return query.where(predicate).getRestriction();
         };
+        // 查询数据
         Page<Blog> page = blogRepository.findAll(spec, pageable);
         // 查询用户
         List<UserDTO> users = userService.findByIds(
@@ -67,10 +75,13 @@ public class BlogServiceImpl implements BlogService {
                 .stream()
                 .map(Blog::getAuthorId)
                 .collect(Collectors.toSet()));
+        // 查询关联的标签
+        List<LabelRelation> listRelations = labelService.listRelations(ModuleEnum.BLOG,
+            page.getContent().stream().map(Blog::getId).collect(Collectors.toSet()));
         // 返回数据
         return new PageImpl<>(page.getContent()
             .stream()
-            .map(item -> BlogUtils.toDTO(item, users))
+            .map(item -> BlogUtils.toVO(item, users, listRelations))
             .collect(Collectors.toList()),
             page.getPageable(), page.getTotalElements());
     }
@@ -82,9 +93,12 @@ public class BlogServiceImpl implements BlogService {
         // 查询用户
         UserDTO user = userService.findById(userId);
         // 保存数据
-        return BlogUtils.toDTO(
-                blogRepository.save(
-                        BlogUtils.create(dto, userId)), user);
+        Blog entity = blogRepository.save(BlogUtils.create(dto, userId));
+        // 保存标签
+        labelService.relate(ModuleEnum.BLOG, entity.getId(), dto.getLabelIds());
+        // 返回值
+        return BlogUtils.toDTO(entity, user, dto.getLabelIds());
+
     }
 
     @Override
@@ -101,8 +115,11 @@ public class BlogServiceImpl implements BlogService {
         // 保存数据
         BlogUtils.copyProperties(dto, original);
         original.setUpdateTime(new Date());
-        return BlogUtils.toDTO(
-                blogRepository.save(original), user);
+        original = blogRepository.save(original);
+        // 保存标签
+        labelService.relate(ModuleEnum.BLOG, id, dto.getLabelIds());
+        // 返回值
+        return BlogUtils.toDTO(original, user, dto.getLabelIds());
     }
 
     @Override

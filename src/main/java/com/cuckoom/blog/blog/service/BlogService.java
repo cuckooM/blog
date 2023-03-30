@@ -1,6 +1,7 @@
 package com.cuckoom.blog.blog.service;
 
 import com.cuckoom.blog.blog.dto.BlogDTO;
+import com.cuckoom.blog.blog.vo.BlogVO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public interface BlogService {
      * @return 结果
      */
     @NonNull
-    Page<BlogDTO> page(@NonNull Pageable pageable, @Nullable Long authorId);
+    Page<BlogVO> page(@NonNull Pageable pageable, @Nullable Long authorId);
 
     /**
      * 增加

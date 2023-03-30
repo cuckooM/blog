@@ -41,7 +41,7 @@ public class BlogDiscussVO implements Serializable {
     private Date createTime;
 
     /** 是否已删除 */
-    private boolean deleted;
+    private Boolean deleted;
 
     /** 子讨论列表 */
     private List<BlogDiscussVO> children = new ArrayList<>();

@@ -1,7 +1,8 @@
 package com.cuckoom.blog.blog.api;
 
-import com.cuckoom.blog.blog.dto.BlogDTO;
 import com.cuckoom.blog.blog.service.BlogService;
+import com.cuckoom.blog.blog.vo.BlogVO;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -31,7 +32,7 @@ public class BlogController {
      * @return 结果
      */
     @GetMapping
-    public ResponseEntity<Page<BlogDTO>> page(@RequestParam(required = false) Long authorId, Pageable pageable) {
+    public ResponseEntity<Page<BlogVO>> page(@RequestParam(required = false) Long authorId, Pageable pageable) {
         return ResponseEntity.ok(blogService.page(pageable, authorId));
     }
 

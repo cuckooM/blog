@@ -3,7 +3,6 @@ package com.cuckoom.blog.blog.service;
 import com.cuckoom.blog.blog.dto.BlogDiscussDTO;
 import com.cuckoom.blog.blog.vo.BlogDiscussVO;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public interface BlogDiscussService {
      * @return 结果
      */
     @NonNull
-    List<BlogDiscussVO> findByBlogId(@Nullable Long blogId);
+    List<BlogDiscussVO> findByBlogId(@NonNull Long blogId);
 
     /**
      * 增加
