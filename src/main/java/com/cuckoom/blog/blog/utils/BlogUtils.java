@@ -6,7 +6,7 @@ import com.cuckoom.blog.blog.entity.BlogDiscuss;
 import com.cuckoom.blog.blog.vo.BlogDiscussVO;
 import com.cuckoom.blog.blog.vo.BlogVO;
 import com.cuckoom.blog.label.dto.LabelDTO;
-import com.cuckoom.blog.label.entity.LabelRelation;
+import com.cuckoom.blog.label.entity.Label;
 import com.cuckoom.blog.label.utils.LabelUtils;
 import com.cuckoom.blog.user.dto.UserDTO;
 
@@ -14,12 +14,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 博客工具类
@@ -54,22 +52,31 @@ public class BlogUtils {
      * @param target 数据库实体
      */
     public static void copyProperties(@NonNull BlogDTO source, @NonNull Blog target) {
-        BeanUtils.copyProperties(source, target, "id", "authorId", "createTime", "updateTime");
+        BeanUtils.copyProperties(source, target, "id", "authorId", "createTime", "updateTime", "labels");
+        List<LabelDTO> labels = source.getLabels();
+        if (null != labels) {
+            target.setLabels(labels.stream().map(item -> {
+                Label label = new Label();
+                BeanUtils.copyProperties(item, label);
+                return label;
+            }).collect(Collectors.toList()));
+        }
     }
 
     /**
      * 将数据库实体转化为 DTO 实体
      * @param entity 数据库实体
      * @param user 用户
-     * @param labelIds 标签 ID 集合
      * @return DTO 实体
      */
     @NonNull
-    public static BlogDTO toDTO(@NonNull Blog entity, @Nullable UserDTO user, @Nullable Set<Long> labelIds) {
+    public static BlogDTO toDTO(@NonNull Blog entity, @Nullable UserDTO user) {
         BlogDTO dto = new BlogDTO();
-        BeanUtils.copyProperties(entity, dto);
+        BeanUtils.copyProperties(entity, dto, "labels");
         dto.setAuthor(user);
-        dto.setLabelIds(labelIds);
+        if (null != entity.getLabels()) {
+            dto.setLabels(entity.getLabels().stream().map(LabelUtils::convert).collect(Collectors.toList()));
+        }
         return dto;
     }
 
@@ -77,14 +84,13 @@ public class BlogUtils {
      * 将数据库实体转化为 DTO 实体
      * @param entity 数据库实体
      * @param users 用户列表
-     * @param listRelations 标签关联数据列表
      * @return DTO 实体
      */
     @NonNull
     public static BlogVO toVO(
-        @NonNull Blog entity, @Nullable Collection<UserDTO> users, @NonNull List<LabelRelation> listRelations) {
+        @NonNull Blog entity, @Nullable Collection<UserDTO> users) {
         BlogVO dto = new BlogVO();
-        BeanUtils.copyProperties(entity, dto);
+        BeanUtils.copyProperties(entity, dto, "labels");
         if (null != users) {
             for (UserDTO user : users) {
                 if (user.getId().equals(entity.getAuthorId())) {
@@ -93,16 +99,9 @@ public class BlogUtils {
                 }
             }
         }
-        Set<Long> labelIds = new HashSet<>();
-        List<LabelDTO> labels = new ArrayList<>();
-        for (LabelRelation relation : listRelations) {
-            if (entity.getId().equals(relation.getEntityId()) && null != relation.getLabel()) {
-                labelIds.add(relation.getLabelId());
-                labels.add(LabelUtils.convert(relation.getLabel()));
-            }
+        if (null != entity.getLabels()) {
+            dto.setLabels(entity.getLabels().stream().map(LabelUtils::convert).collect(Collectors.toList()));
         }
-        dto.setLabelIds(labelIds);
-        dto.setLabels(labels);
         return dto;
     }
 

@@ -15,13 +15,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Filters incoming requests and installs a Spring Security principal if a header corresponding to a valid user is
  * found.
  * @author cuckooM
  */
+@RequiredArgsConstructor
 public class JWTFilter extends GenericFilterBean {
 
+   /** 运行时日志 */
    private static final Logger LOG = LoggerFactory.getLogger(JWTFilter.class);
 
    /** 请求头 Authorization */
@@ -30,11 +34,8 @@ public class JWTFilter extends GenericFilterBean {
    /** Token 前缀 */
    public static final String TOKEN_PREFIX = "Bearer ";
 
+   /** JWT Provider */
    private final TokenProvider tokenProvider;
-
-   public JWTFilter(TokenProvider tokenProvider) {
-      this.tokenProvider = tokenProvider;
-   }
 
    @Override
    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)

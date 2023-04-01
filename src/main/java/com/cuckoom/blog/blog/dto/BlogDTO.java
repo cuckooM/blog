@@ -5,10 +5,11 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.cuckoom.blog.label.dto.LabelDTO;
 import com.cuckoom.blog.user.dto.UserDTO;
 
 /**
@@ -42,7 +43,7 @@ public class BlogDTO implements Serializable {
     /** 修改时间 */
     private Date updateTime;
 
-    /** 标签 ID 集合 */
-    private Set<Long> labelIds;
+    /** 标签集合 */
+    private List<LabelDTO> labels;
 
 }
