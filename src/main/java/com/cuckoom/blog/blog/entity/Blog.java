@@ -48,8 +48,8 @@ public class Blog implements Serializable {
 
     /** 标签 */
     @ManyToMany(targetEntity = Label.class, fetch = FetchType.EAGER)
-    @JoinTable(name = "tbl_label_relation",
-        joinColumns = @JoinColumn(name = "entity_id"), inverseJoinColumns = @JoinColumn(name = "label_id"))
+    @JoinTable(name = "tbl_blog_label",
+        joinColumns = @JoinColumn(name = "blog_id"), inverseJoinColumns = @JoinColumn(name = "label_id"))
     private List<Label> labels;
 
     /** 是否已删除 */

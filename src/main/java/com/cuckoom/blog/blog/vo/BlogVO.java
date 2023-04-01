@@ -3,7 +3,6 @@ package com.cuckoom.blog.blog.vo;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import com.cuckoom.blog.label.dto.LabelDTO;
 import com.cuckoom.blog.user.dto.UserDTO;
@@ -40,9 +39,6 @@ public class BlogVO implements Serializable {
 
     /** 修改时间 */
     private Date updateTime;
-
-    /** 标签 ID 集合 */
-    private Set<Long> labelIds;
 
     /** 标签 */
     private List<LabelDTO> labels;

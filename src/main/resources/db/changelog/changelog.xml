@@ -55,11 +55,9 @@
                 deleted BOOLEAN NOT NULL DEFAULT FALSE               -- 是否已删除
             );
             -- 标签数据表
-            CREATE TABLE IF NOT EXISTS tbl_label_relation (
-                id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
+            CREATE TABLE IF NOT EXISTS tbl_blog_label (
                 label_id BIGINT NOT NULL,                            -- 标签 ID
-                entity_id BIGINT NOT NULL,                           -- 数据 ID
-                type int NOT NULL                                    -- 类型
+                blog_id BIGINT NOT NULL                              -- 数据 ID
             );
             -- 博客讨论表
             CREATE TABLE IF NOT EXISTS tbl_blog_discuss (

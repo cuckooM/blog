@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,54 +26,55 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
+/**
+ * JWT Provider
+ * @author cuckooM
+ */
 @Component
+@RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
 
+   /** 运行时日志 */
    private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
-   private static final String AUTHORITIES_KEY = "auth";
+   /** 关键字：auth */
+   private static final String CLAIM_AUTHORITIES = "auth";
 
-   private static final String USERID = "userId";
+   /** 关键字：userId */
+   private static final String CLAIM_USERID = "userId";
 
-   private static final String DISPLAY_NAME = "display_name";
+   /** 关键字：displayName */
+   private static final String CLAIM_DISPLAY_NAME = "displayName";
 
-   @Value("${jwt.base64-secret:ZmQ0ZGI5NjQ0MDQwY2I4MjMxY2Y3ZmI3MjdhN2ZmMjNhODViOTg1ZGE0NTBjMGM4NDA5NzYxMjdjOWMwYWRmZTBlZjlhNGY3ZTg4Y2U3YTE1ODVkZDU5Y2Y3OGYwZWE1NzUzNWQ2YjFjZDc0NGMxZWU2MmQ3MjY1NzJmNTE0MzI=}")
-   private String base64Secret;
-   @Value("${jwt.token-validity-in-seconds:8640000}")
-   private long tokenValidityInMilliseconds;
-   @Value("${jwt.token-validity-in-seconds-for-remember-me:10800000}") 
-   private long tokenValidityInMillisecondsForRememberMe;
+   /** JWT 配置参数 */
+   private final JwtProperties jwtProperties;
 
+   /** 密钥 */
    private Key key;
 
    @Override
    public void afterPropertiesSet() {
-      byte[] keyBytes = Decoders.BASE64.decode(base64Secret);
-      this.key = Keys.hmacShaKeyFor(keyBytes);
+      this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretBase64()));
    }
 
    public String createToken(Authentication authentication, boolean rememberMe) {
 
-      TokenUser tokenUser = (TokenUser) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal();
+      TokenUser tokenUser = (TokenUser) authentication.getPrincipal();
 
       String authorities = authentication.getAuthorities().stream()
          .map(GrantedAuthority::getAuthority)
          .collect(Collectors.joining(","));
 
-      long now = (new Date()).getTime();
-      Date validity;
-      if (rememberMe) {
-         validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
-      } else {
-         validity = new Date(now + this.tokenValidityInMilliseconds);
-      }
+      Long expiration = rememberMe ? this.jwtProperties.getExpiration() : this.jwtProperties.getExpirationRememberMe();
+      Date validity = new Date(System.currentTimeMillis() + expiration * 1000);
 
       return Jwts.builder()
           .setSubject(authentication.getName())
-          .claim(AUTHORITIES_KEY, authorities)
-          .claim(USERID, tokenUser.getUserId())
-          .claim(DISPLAY_NAME, tokenUser.getDisplayName())
+          .claim(CLAIM_AUTHORITIES, authorities)
+          .claim(CLAIM_USERID, tokenUser.getUserId())
+          .claim(CLAIM_DISPLAY_NAME, tokenUser.getDisplayName())
           .signWith(key, SignatureAlgorithm.HS512)
           .setExpiration(validity)
           .compact();
@@ -85,16 +85,14 @@ public class TokenProvider implements InitializingBean {
          .setSigningKey(key)
          .parseClaimsJws(token)
          .getBody();
-      Object obj = claims.get(USERID);
-      Object obj2 = claims.get(DISPLAY_NAME);
 
       Collection<? extends GrantedAuthority> authorities =
-         Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+         Arrays.stream(claims.get(CLAIM_AUTHORITIES).toString().split(","))
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 
-      User principal = new TokenUser(Long.parseLong(claims.get(USERID).toString()), claims.getSubject(),
-          claims.get(DISPLAY_NAME).toString(),"", authorities);
+      User principal = new TokenUser(Long.parseLong(claims.get(CLAIM_USERID).toString()), claims.getSubject(),
+          claims.get(CLAIM_DISPLAY_NAME).toString(),"", authorities);
 
       return new UsernamePasswordAuthenticationToken(principal, token, authorities);
    }
@@ -104,17 +102,13 @@ public class TokenProvider implements InitializingBean {
          Jwts.parser().setSigningKey(key).parseClaimsJws(authToken);
          return true;
       } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-         log.info("Invalid JWT signature.");
-         log.trace("Invalid JWT signature trace: {}", e);
+         log.trace("Invalid JWT signature trace.", e);
       } catch (ExpiredJwtException e) {
-         log.info("Expired JWT token.");
-         log.trace("Expired JWT token trace: {}", e);
+         log.trace("Expired JWT token trace.", e);
       } catch (UnsupportedJwtException e) {
-         log.info("Unsupported JWT token.");
-         log.trace("Unsupported JWT token trace: {}", e);
+         log.trace("Unsupported JWT token trace.", e);
       } catch (IllegalArgumentException e) {
-         log.info("JWT token compact of handler are invalid.");
-         log.trace("JWT token compact of handler are invalid trace: {}", e);
+         log.trace("JWT token compact of handler are invalid trace.", e);
       }
       return false;
    }
