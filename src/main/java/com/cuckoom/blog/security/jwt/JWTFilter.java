@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class JWTFilter extends GenericFilterBean {
 
    /** 运行时日志 */
-   private static final Logger LOG = LoggerFactory.getLogger(JWTFilter.class);
+   private static final Logger logger = LoggerFactory.getLogger(JWTFilter.class);
 
    /** 请求头 Authorization */
    public static final String HEADER_AUTHORIZATION = "Authorization";
@@ -47,9 +47,9 @@ public class JWTFilter extends GenericFilterBean {
       if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
          Authentication authentication = tokenProvider.getAuthentication(jwt);
          SecurityContextHolder.getContext().setAuthentication(authentication);
-         LOG.debug("set Authentication to security context for '{}', uri: {}", authentication.getName(), uri);
+         logger.debug("set Authentication to security context for '{}', uri: {}", authentication.getName(), uri);
       } else {
-         LOG.debug("no valid JWT token found, uri: {}", uri);
+         logger.debug("no valid JWT token found, uri: {}", uri);
       }
 
       filterChain.doFilter(servletRequest, servletResponse);
