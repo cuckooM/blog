@@ -7,26 +7,30 @@ import com.cuckoom.blog.blog.dto.BlogDTO;
 import com.cuckoom.blog.blog.entity.Blog;
 import com.cuckoom.blog.blog.repository.BlogRepository;
 import com.cuckoom.blog.blog.utils.BlogUtils;
+import com.cuckoom.blog.label.entity.Label;
 import com.cuckoom.blog.user.dto.UserDTO;
 import com.cuckoom.blog.user.service.UserService;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -49,17 +53,30 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @NonNull
-    public Page<BlogVO> page(@NonNull Pageable pageable, @Nullable Long authorId) {
+    @Transactional(readOnly = true)
+    public Page<BlogVO> page(@NonNull Pageable pageable, @Nullable Long authorId, @Nullable List<String> labelIds) {
         // 查询条件
         Specification<Blog> spec = (Root<Blog> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             query.distinct(true);
+            // 条件列表
+            List<Predicate> predicates = new ArrayList<>();
             // 未删除条件
-            Predicate predicate = cb.equal(root.get("deleted"), false);
+            predicates.add(cb.equal(root.get("deleted"), false));
+
             if (null != authorId) {
                 // 作者条件
-                predicate = cb.and(predicate, cb.equal(root.get("authorId"), authorId));
+                predicates.add(cb.equal(root.get("authorId"), authorId));
             }
-            return query.where(predicate).getRestriction();
+            if (null != labelIds && !labelIds.isEmpty()) {
+                // 标签条件
+                Join<Blog, Label> join = (Join<Blog, Label>) root.getJoins().stream()
+                    .filter(item -> "labels".equals(item.getAttribute().getName())
+                        && item.getJoinType() == JoinType.LEFT)
+                    .findFirst()
+                    .orElse(root.join("labels", JoinType.LEFT));
+                predicates.add(join.get("id").in(labelIds));
+            }
+            return query.where(cb.and(predicates.toArray(new Predicate[0]))).getRestriction();
         };
         // 查询数据
         Page<Blog> page = blogRepository.findAll(spec, pageable);
@@ -75,6 +92,23 @@ public class BlogServiceImpl implements BlogService {
             .map(item -> BlogUtils.toVO(item, users))
             .collect(Collectors.toList()),
             page.getPageable(), page.getTotalElements());
+    }
+
+    @Override
+    @Nullable
+    @Transactional(readOnly = true)
+    public BlogVO findOne(@NonNull Long id) {
+        Blog blog = blogRepository.findByIdAndDeletedFalse(id);
+        if (null != blog) {
+            // 查询作者
+            List<UserDTO> users = new ArrayList<>();
+            UserDTO user = userService.findById(blog.getAuthorId());
+            if (null != user) {
+                users.add(user);
+            }
+            return BlogUtils.toVO(blog, users);
+        }
+        return null;
     }
 
     @Override

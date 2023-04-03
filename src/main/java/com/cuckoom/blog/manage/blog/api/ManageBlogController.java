@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,11 +42,14 @@ public class ManageBlogController {
      * 分页查询数据
      * @param authorId 作者 ID
      * @param pageable 分页条件
+     * @param params 查询条件
      * @return 结果
      */
     @GetMapping
-    public ResponseEntity<Page<BlogVO>> page(@RequestParam(required = false) Long authorId, Pageable pageable) {
-        return ResponseEntity.ok(blogService.page(pageable, authorId));
+    public ResponseEntity<Page<BlogVO>> page(
+        @RequestParam(required = false) Long authorId, Pageable pageable,
+        @RequestParam MultiValueMap<String, String> params) {
+        return ResponseEntity.ok(blogService.page(pageable, authorId, params.get("labels.idIn")));
     }
 
     /**

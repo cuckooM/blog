@@ -5,17 +5,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * JWT 配置
+ * @author cuckooM
+ */
 public class JWTConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private TokenProvider tokenProvider;
+    /** JWT Provider */
+    private final TokenProvider tokenProvider;
 
+    /**
+     * 构造函数
+     * @param tokenProvider JWT Provider
+     */
     public JWTConfigurer(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 
     @Override
     public void configure(HttpSecurity http) {
-        JWTFilter customFilter = new JWTFilter(tokenProvider);
-        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JWTFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 }
