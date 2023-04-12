@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class TokenProvider implements InitializingBean {
 
    /** 运行时日志 */
-   private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
+   private final static Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
    /** 关键字：auth */
    private static final String CLAIM_AUTHORITIES = "auth";

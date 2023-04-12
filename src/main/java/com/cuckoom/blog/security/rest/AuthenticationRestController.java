@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Controller to authenticate users.
  */
 @RestController
-@RequestMapping("/api/authenticate")
+@RequestMapping("/api/auth")
 public class AuthenticationRestController {
 
    private final TokenProvider tokenProvider;
