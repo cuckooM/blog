@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import com.cuckoom.blog.security.TokenUser;
+import com.cuckoom.blog.security.model.Token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -59,7 +60,13 @@ public class TokenProvider implements InitializingBean {
       this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretBase64()));
    }
 
-   public String createToken(Authentication authentication, boolean rememberMe) {
+   /**
+    * 生成 Token 对象
+    * @param authentication 认证信息
+    * @param rememberMe 是否"remember-me"用户
+    * @return 结果
+    */
+   public Token createToken(Authentication authentication, boolean rememberMe) {
 
       TokenUser tokenUser = (TokenUser) authentication.getPrincipal();
 
@@ -67,10 +74,11 @@ public class TokenProvider implements InitializingBean {
          .map(GrantedAuthority::getAuthority)
          .collect(Collectors.joining(","));
 
-      Long expiration = rememberMe ? this.jwtProperties.getExpiration() : this.jwtProperties.getExpirationRememberMe();
-      Date validity = new Date(System.currentTimeMillis() + expiration * 1000);
+      Long expiration = rememberMe ? this.jwtProperties.getExpiration() * 1000
+          : this.jwtProperties.getExpirationRememberMe() * 1000;
+      Date validity = new Date(System.currentTimeMillis() + expiration);
 
-      return Jwts.builder()
+      String token = Jwts.builder()
           .setSubject(authentication.getName())
           .claim(CLAIM_AUTHORITIES, authorities)
           .claim(CLAIM_USERID, tokenUser.getUserId())
@@ -78,8 +86,14 @@ public class TokenProvider implements InitializingBean {
           .signWith(key, SignatureAlgorithm.HS512)
           .setExpiration(validity)
           .compact();
+      return new Token(token, expiration);
    }
 
+   /**
+    * 解析 token 得到用户信息
+    * @param token token
+    * @return 用户认证信息
+    */
    public Authentication getAuthentication(String token) {
       Claims claims = Jwts.parserBuilder()
          .setSigningKey(key)

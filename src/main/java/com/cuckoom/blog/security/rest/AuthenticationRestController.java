@@ -7,7 +7,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cuckoom.blog.security.jwt.JWTFilter;
 import com.cuckoom.blog.security.jwt.TokenProvider;
+import com.cuckoom.blog.security.model.Token;
 import com.cuckoom.blog.security.rest.dto.LoginDto;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Controller to authenticate users.
+ * @author cuckooM
  */
 @RestController
 @RequestMapping("/api/auth")
@@ -35,9 +35,7 @@ public class AuthenticationRestController {
    }
 
    @PostMapping
-   public ResponseEntity<JWTToken> authorize(@RequestBody LoginDto loginDto) {
-
-      String str = new BCryptPasswordEncoder().encode("admin");
+   public ResponseEntity<Token> authorize(@RequestBody LoginDto loginDto) {
 
       UsernamePasswordAuthenticationToken authenticationToken =
          new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
@@ -45,33 +43,12 @@ public class AuthenticationRestController {
       Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
       SecurityContextHolder.getContext().setAuthentication(authentication);
 
-      boolean rememberMe = (loginDto.isRememberMe() == null) ? false : loginDto.isRememberMe();
-      String jwt = tokenProvider.createToken(authentication, rememberMe);
+      boolean rememberMe = loginDto.isRememberMe() != null && loginDto.isRememberMe();
+      Token token = tokenProvider.createToken(authentication, rememberMe);
 
       HttpHeaders httpHeaders = new HttpHeaders();
-      httpHeaders.add(JWTFilter.HEADER_AUTHORIZATION, "Bearer " + jwt);
+      httpHeaders.add(JWTFilter.HEADER_AUTHORIZATION, "Bearer " + token.getToken());
 
-      return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
-   }
-
-   /**
-    * Object to return as body in JWT Authentication.
-    */
-   static class JWTToken {
-
-      private String idToken;
-
-      JWTToken(String idToken) {
-         this.idToken = idToken;
-      }
-
-      @JsonProperty("id_token")
-      String getIdToken() {
-         return idToken;
-      }
-
-      void setIdToken(String idToken) {
-         this.idToken = idToken;
-      }
+      return new ResponseEntity<>(token, httpHeaders, HttpStatus.OK);
    }
 }
