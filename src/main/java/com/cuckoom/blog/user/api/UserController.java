@@ -1,15 +1,12 @@
 package com.cuckoom.blog.user.api;
 
 import java.security.Principal;
-import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cuckoom.blog.label.dto.LabelDTO;
 import com.cuckoom.blog.security.SecurityUtils;
 import com.cuckoom.blog.user.dto.UserDTO;
 import com.cuckoom.blog.user.service.UserService;
