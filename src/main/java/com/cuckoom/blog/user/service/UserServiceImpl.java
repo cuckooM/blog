@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,23 +24,21 @@ import com.cuckoom.blog.user.entity.User;
 import com.cuckoom.blog.user.repository.UserRepository;
 import com.cuckoom.blog.user.utils.UserUtils;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * 用户业务逻辑层接口实现类
  * @author cuckooM
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     /** 用户数据访问层接口 */
     private final UserRepository userRepository;
 
-    /**
-     * 构造函数
-     * @param userRepository 用户数据访问层接口
-     */
-    public UserServiceImpl(@NonNull UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    /** 加密算法 */
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -47,7 +46,8 @@ public class UserServiceImpl implements UserService {
     public UserDTO add(@NonNull UserDTO dto) {
         // 保存数据
         User entity = new User();
-        BeanUtils.copyProperties(dto, entity, "id");
+        BeanUtils.copyProperties(dto, entity, "id", "passwd");
+        entity.setPasswd(passwordEncoder.encode(dto.getPasswd()));
         entity.setCreateTime(new Date());
         entity = userRepository.save(entity);
         // 构造返回值
