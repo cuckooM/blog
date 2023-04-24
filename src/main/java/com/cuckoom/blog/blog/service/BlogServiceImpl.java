@@ -54,7 +54,18 @@ public class BlogServiceImpl implements BlogService {
     @Override
     @NonNull
     @Transactional(readOnly = true)
-    public Page<BlogVO> page(@NonNull Pageable pageable, @Nullable Long authorId, @Nullable List<String> labelIds) {
+    public Page<BlogVO> page(@NonNull Pageable pageable, @Nullable String userName, @Nullable List<String> labelIds) {
+        // 作者
+        UserDTO user = null;
+        if (null != userName) {
+            user = userService.findByUserName(userName);
+        }
+        final Long authorId;
+        if (null != user) {
+            authorId = user.getId();
+        } else {
+            authorId = null;
+        }
         // 查询条件
         Specification<Blog> spec = (Root<Blog> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             query.distinct(true);
