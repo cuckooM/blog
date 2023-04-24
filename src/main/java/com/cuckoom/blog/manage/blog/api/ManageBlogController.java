@@ -40,16 +40,16 @@ public class ManageBlogController {
 
     /**
      * 分页查询数据
-     * @param authorId 作者 ID
+     * @param userName 作者名称
      * @param pageable 分页条件
      * @param params 查询条件
      * @return 结果
      */
     @GetMapping
     public ResponseEntity<Page<BlogVO>> page(
-        @RequestParam(required = false) Long authorId, Pageable pageable,
+        @RequestParam(required = false) String userName, Pageable pageable,
         @RequestParam MultiValueMap<String, String> params) {
-        return ResponseEntity.ok(blogService.page(pageable, authorId, params.get("labels.idIn")));
+        return ResponseEntity.ok(blogService.page(pageable, userName, params.get("labels.idIn")));
     }
 
     /**

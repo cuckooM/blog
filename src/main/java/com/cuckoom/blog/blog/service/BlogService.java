@@ -19,12 +19,12 @@ public interface BlogService {
     /**
      * 分页查询数据
      * @param pageable 分页条件
-     * @param authorId 作者 ID
+     * @param userName 作者名称
      * @param labelIds 标签 ID 列表
      * @return 结果
      */
     @NonNull
-    Page<BlogVO> page(@NonNull Pageable pageable, @Nullable Long authorId, @Nullable List<String> labelIds);
+    Page<BlogVO> page(@NonNull Pageable pageable, @Nullable String userName, @Nullable List<String> labelIds);
 
     /**
      * 根据 ID 查询数据
