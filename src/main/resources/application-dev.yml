@@ -4,6 +4,12 @@ spring:
     url: jdbc:postgresql://47.98.148.158:5432/blog?ssl=true&sslmode=verify-ca&sslcert=D:\\certs\\client.crt&sslkey=D:\\certs\\client.pk8&sslrootcert=D:\\certs\\root.crt
     username: cuckooM
     password: cuckooM
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:8080
+          jwk-set-uri: http://127.0.0.1:8080/oauth2/jwks
 logging:
   level:
     root: info

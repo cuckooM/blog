@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cuckoom.blog.security.SecurityUtils;
 import com.cuckoom.blog.user.dto.UserDTO;
 import com.cuckoom.blog.user.service.UserService;
 
@@ -32,7 +31,7 @@ public class UserController {
      */
     @GetMapping("/current")
     public ResponseEntity<UserDTO> current(Principal principal) {
-        return ResponseEntity.ok(userService.findById(SecurityUtils.getUserId(principal)));
+        return ResponseEntity.ok(null);
     }
 
 }

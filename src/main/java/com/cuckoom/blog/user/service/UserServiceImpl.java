@@ -15,7 +15,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +36,6 @@ public class UserServiceImpl implements UserService {
     /** 用户数据访问层接口 */
     private final UserRepository userRepository;
 
-    /** 加密算法 */
-    private final PasswordEncoder passwordEncoder;
-
     @Override
     @Transactional
     @NonNull
@@ -47,7 +43,7 @@ public class UserServiceImpl implements UserService {
         // 保存数据
         User entity = new User();
         BeanUtils.copyProperties(dto, entity, "id", "passwd");
-        entity.setPasswd(passwordEncoder.encode(dto.getPasswd()));
+        entity.setPasswd(dto.getPasswd());
         entity.setCreateTime(new Date());
         entity = userRepository.save(entity);
         // 构造返回值

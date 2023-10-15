@@ -4,7 +4,6 @@ import com.cuckoom.blog.blog.vo.BlogVO;
 import com.cuckoom.blog.common.PermissionConsts;
 import com.cuckoom.blog.blog.dto.BlogDTO;
 import com.cuckoom.blog.blog.service.BlogService;
-import com.cuckoom.blog.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -60,7 +59,7 @@ public class ManageBlogController {
      */
     @PostMapping
     public ResponseEntity<BlogDTO> add(@RequestBody BlogDTO dto, Principal principal) {
-        return ResponseEntity.ok(blogService.add(dto, SecurityUtils.getUserId(principal)));
+        return ResponseEntity.ok(blogService.add(dto, 1L));
     }
 
     /**
@@ -72,7 +71,7 @@ public class ManageBlogController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<BlogDTO> update(@PathVariable Long id, @RequestBody BlogDTO dto, Principal principal) {
-        return ResponseEntity.ok(blogService.update(id, dto, SecurityUtils.getUserId(principal)));
+        return ResponseEntity.ok(blogService.update(id, dto, 1L));
     }
 
     /**
@@ -83,7 +82,7 @@ public class ManageBlogController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id, Principal principal) {
-        blogService.delete(id, SecurityUtils.getUserId(principal));
+        blogService.delete(id, 1L);
         return ResponseEntity.noContent().build();
     }
 
