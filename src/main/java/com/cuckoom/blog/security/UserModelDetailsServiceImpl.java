@@ -2,10 +2,12 @@ package com.cuckoom.blog.security;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.cuckoom.blog.role.entity.Permission;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.cuckoom.blog.common.PermissionConsts;
 import com.cuckoom.blog.role.entity.Role;
 import com.cuckoom.blog.role.service.RoleService;
 import com.cuckoom.blog.user.dto.UserDTO;
@@ -24,6 +25,7 @@ import com.cuckoom.blog.user.service.UserService;
  * @author cuckooM
  */
 @Component("userDetailsService")
+@RequiredArgsConstructor
 public class UserModelDetailsServiceImpl implements UserDetailsService {
 
    private final Logger log = LoggerFactory.getLogger(UserModelDetailsServiceImpl.class);
@@ -33,11 +35,6 @@ public class UserModelDetailsServiceImpl implements UserDetailsService {
 
    /** 角色业务逻辑层接口 */
    private final RoleService roleService;
-
-   public UserModelDetailsServiceImpl(@NonNull UserService userService, @NonNull RoleService roleService) {
-      this.userService = userService;
-      this.roleService = roleService;
-   }
 
    @Override
    public UserDetails loadUserByUsername(final String username) {
@@ -55,12 +52,10 @@ public class UserModelDetailsServiceImpl implements UserDetailsService {
       List<GrantedAuthority> authorities = new ArrayList<>();
       if (!roles.isEmpty()) {
          for (Role role : roles) {
-//            List<String> permissions = role.getPermissions();
-            List<String> permissions = new ArrayList<>();
-            permissions.add(PermissionConsts.ROLE_MANAGER);
+            Set<Permission> permissions = role.getPermissions();
             if (null != permissions && !permissions.isEmpty()) {
-               for (String permission : permissions) {
-                  authorities.add(new SimpleGrantedAuthority(permission));
+               for (Permission permission : permissions) {
+                  authorities.add(new SimpleGrantedAuthority(permission.getKey()));
                }
             }
          }

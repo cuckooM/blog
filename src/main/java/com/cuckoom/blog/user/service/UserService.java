@@ -3,6 +3,8 @@ package com.cuckoom.blog.user.service;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -45,5 +47,13 @@ public interface UserService {
      */
     @NonNull
     List<UserDTO> findByIds(@NonNull Collection<Long> userIds);
+
+    /**
+     * 分页查询
+     * @param pageable 分页条件
+     * @return 结果
+     */
+    @NonNull
+    Page<UserDTO> page(@NonNull Pageable pageable);
 
 }

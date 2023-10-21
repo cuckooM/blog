@@ -72,4 +72,26 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="3" author="cuckooM">
+        <sql>
+            -- 权限表
+            CREATE TABLE IF NOT EXISTS tbl_permission (
+                id BIGSERIAL NOT NULL PRIMARY KEY,                   -- 自增主键
+                key VARCHAR(128) NOT NULL,                           -- 关键字
+                name VARCHAR(128) NOT NULL                           -- 名称
+            );
+            INSERT INTO tbl_permission(key, name) VALUES('PERM_ROLE_BASIC', '角色管理'),('PERM_USER_BASIC', '用户管理'),
+                ('PERM_BLOG_BASIC', '博客管理');
+            -- 角色和权限的中间表
+            CREATE TABLE IF NOT EXISTS tbl_role_permission (
+                role_id BIGINT NOT NULL,                             -- 角色 ID
+                permission_id BIGINT NOT NULL                        -- 用户 ID
+            );
+            INSERT INTO tbl_role_permission(role_id, permission_id) VALUES(1, 1),(1, 2),(1, 3);
+            -- 角色表删除权限字段
+            ALTER TABLE tbl_role DROP COLUMN IF EXISTS permissions;
+            -- 角色“管理员”改名
+            UPDATE tbl_role SET name = '管理员' WHERE id = 1;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -2,7 +2,11 @@ package com.cuckoom.blog.user.api;
 
 import java.security.Principal;
 
+import com.cuckoom.blog.common.PermissionConsts;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +37,17 @@ public class UserController {
     @GetMapping("/current")
     public ResponseEntity<UserDTO> current(Principal principal) {
         return ResponseEntity.ok(userService.findById(SecurityUtils.getUserId(principal)));
+    }
+
+    /**
+     * 分页查询
+     * @param pageable 分页条件
+     * @return 数据
+     */
+    @GetMapping("/page")
+    @PreAuthorize(PermissionConsts.PERM_USER_BASIC)
+    public ResponseEntity<Page<UserDTO>> page(Pageable pageable) {
+        return ResponseEntity.ok(userService.page(pageable));
     }
 
 }

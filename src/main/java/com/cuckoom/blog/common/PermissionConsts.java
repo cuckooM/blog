@@ -10,10 +10,13 @@ public class PermissionConsts {
     private PermissionConsts() {
     }
 
-    /** 角色：管理员 */
-    public static final String ROLE_MANAGER = "ROLE_MANAGER";
+    /** 角色管理权限 */
+    public static final String PERM_ROLE_BASIC = "PERM_ROLE_BASIC";
+
+    /** 用户管理权限 */
+    public static final String PERM_USER_BASIC = "PERM_USER_BASIC";
 
     /** 博客管理权限 */
-    public static final String PERM_MANAGE_BLOG = "PERM_MANAGE_BLOG";
+    public static final String PERM_BLOG_BASIC = "PERM_BLOG_BASIC";
 
 }

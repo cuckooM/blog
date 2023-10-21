@@ -1,12 +1,10 @@
 package com.cuckoom.blog.role.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,7 +18,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
-import org.hibernate.annotations.Type;
 
 import com.cuckoom.blog.user.entity.User;
 
@@ -47,16 +44,19 @@ public class Role implements Serializable {
     /** 名称 */
     private String name;
 
-    /** 权限列表 */
-//    @Column(name = "permissions")
-//    private ArrayList<String> permissions;
-
     /** 关联的人员集合 */
     @ManyToMany(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinTable(name = "tbl_role_user", joinColumns = @JoinColumn(name = "role_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id"))
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     @NotFound(action = NotFoundAction.IGNORE)
     private Set<User> users = new HashSet<>();
+
+    /** 权限列表 */
+    @ManyToMany(targetEntity = Permission.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "tbl_role_permission", joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Set<Permission> permissions = new HashSet<>();
 
     /** 创建时间 */
     @Column(name = "create_time")

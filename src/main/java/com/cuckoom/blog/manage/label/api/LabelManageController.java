@@ -1,8 +1,7 @@
 package com.cuckoom.blog.manage.label.api;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/manage/label")
 @RequiredArgsConstructor
-@RolesAllowed(PermissionConsts.ROLE_MANAGER)
+@PreAuthorize(PermissionConsts.PERM_BLOG_BASIC)
 public class LabelManageController {
 
     /** 标签业务逻辑 */

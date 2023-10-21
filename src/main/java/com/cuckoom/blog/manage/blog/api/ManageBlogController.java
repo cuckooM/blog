@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-import javax.annotation.security.RolesAllowed;
-
 /**
  * 博客 API 控制器
  * @author cuckooM
@@ -32,7 +31,7 @@ import javax.annotation.security.RolesAllowed;
 @RestController
 @RequestMapping("/api/manage/blog")
 @RequiredArgsConstructor
-@RolesAllowed(PermissionConsts.ROLE_MANAGER)
+@PreAuthorize(PermissionConsts.PERM_BLOG_BASIC)
 public class ManageBlogController {
 
     /** 博客业务逻辑 */

@@ -12,6 +12,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -75,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Nullable
+    @NonNull
     public List<UserDTO> findByIds(@NonNull Collection<Long> userIds) {
         if (userIds.isEmpty()) {
             return new ArrayList<>();
@@ -90,6 +93,14 @@ public class UserServiceImpl implements UserService {
             .stream()
             .map(UserUtils::convert)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    @NonNull
+    public Page<UserDTO> page(@NonNull Pageable pageable) {
+        Page<User> page = userRepository.findAll(pageable);
+        return new PageImpl<>(page.getContent().stream().map(UserUtils::convert).collect(Collectors.toList()),
+                pageable, page.getTotalElements());
     }
 
 }
