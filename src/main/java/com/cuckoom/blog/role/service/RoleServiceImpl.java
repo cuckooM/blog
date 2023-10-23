@@ -2,12 +2,17 @@ package com.cuckoom.blog.role.service;
 
 import java.util.List;
 
+import com.cuckoom.blog.role.dto.RoleDTO;
+import org.springframework.beans.BeanUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.cuckoom.blog.role.entity.Role;
 import com.cuckoom.blog.role.repository.RoleRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import javax.transaction.Transactional;
 
 /**
  * 角色业务逻辑层接口实现类
@@ -21,7 +26,23 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public List<Role> findByUserId(Long userId) {
+    @NonNull
+    public List<Role> findByUserId(@NonNull Long userId) {
         return roleRepository.findByUsersId(userId);
+    }
+
+
+    @NonNull
+    @Override
+    @Transactional
+    public RoleDTO add(@NonNull RoleDTO dto) {
+        Role entity = new Role();
+        BeanUtils.copyProperties(dto, entity, "id", "users");
+        if (null != dto.getUsers()) {
+
+        }
+        entity = roleRepository.save(entity);
+        dto.setId(entity.getId());
+        return dto;
     }
 }

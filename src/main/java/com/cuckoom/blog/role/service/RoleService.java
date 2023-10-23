@@ -2,6 +2,7 @@ package com.cuckoom.blog.role.service;
 
 import java.util.List;
 
+import com.cuckoom.blog.role.dto.RoleDTO;
 import org.springframework.lang.NonNull;
 
 import com.cuckoom.blog.role.entity.Role;
@@ -17,7 +18,15 @@ public interface RoleService {
      * @param userId 用户 ID
      * @return 结果
      */
+    @NonNull
     List<Role> findByUserId(@NonNull Long userId);
 
+    /**
+     * 增加
+     * @param dto 实体
+     * @return 结果
+     */
+    @NonNull
+    RoleDTO add(@NonNull RoleDTO dto);
 
 }

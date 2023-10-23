@@ -80,7 +80,7 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize(PermissionConsts.PERM_USER_BASIC)
-    public ResponseEntity<Void> update(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
