@@ -7,15 +7,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.cuckoom.blog.security.SecurityUtils;
 import com.cuckoom.blog.user.dto.UserDTO;
 import com.cuckoom.blog.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+
+import javax.validation.Valid;
 
 /**
  * 用户 API 控制器
@@ -48,6 +48,41 @@ public class UserController {
     @PreAuthorize(PermissionConsts.PERM_USER_BASIC)
     public ResponseEntity<Page<UserDTO>> page(Pageable pageable) {
         return ResponseEntity.ok(userService.page(pageable));
+    }
+
+    /**
+     * 增加用户
+     * @param dto 用户实体
+     * @return 结果
+     */
+    @PostMapping
+    @PreAuthorize(PermissionConsts.PERM_USER_BASIC)
+    public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO dto) {
+        return ResponseEntity.ok(userService.add(dto));
+    }
+
+    /**
+     * 修改用户
+     * @param id 用户 ID
+     * @param dto 用户实体
+     * @return 结果
+     */
+    @PutMapping("/{id}")
+    @PreAuthorize(PermissionConsts.PERM_USER_BASIC)
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO dto) {
+        return ResponseEntity.ok(userService.update(id, dto));
+    }
+
+    /**
+     * 删除用户
+     * @param id 用户 ID
+     * @return 结果
+     */
+    @DeleteMapping("/{id}")
+    @PreAuthorize(PermissionConsts.PERM_USER_BASIC)
+    public ResponseEntity<Void> update(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

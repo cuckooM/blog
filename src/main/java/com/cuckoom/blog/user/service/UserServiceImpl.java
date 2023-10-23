@@ -11,6 +11,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.cuckoom.blog.common.service.MessageService;
+import com.cuckoom.blog.exception.PayloadException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,6 +45,9 @@ public class UserServiceImpl implements UserService {
     /** 加密算法 */
     private final PasswordEncoder passwordEncoder;
 
+    /** 多语言资源支持接口 */
+    private final MessageService messageService;
+
     @Override
     @Transactional
     @NonNull
@@ -57,6 +62,35 @@ public class UserServiceImpl implements UserService {
         UserDTO result = new UserDTO();
         BeanUtils.copyProperties(entity, result);
         return result;
+    }
+
+    @Override
+    @Transactional
+    @NonNull
+    public UserDTO update(@NonNull Long id, @NonNull UserDTO dto) {
+        User entity = userRepository.findById(id).orElse(null);
+        if (null == entity) {
+            throw new PayloadException(messageService.getMessage("error.not.exist"));
+        }
+        BeanUtils.copyProperties(dto, entity, "id", "passwd");
+        if (null != dto.getPasswd()) {
+            entity.setPasswd(passwordEncoder.encode(dto.getPasswd()));
+        }
+        entity = userRepository.save(entity);
+        // 构造返回值
+        UserDTO result = new UserDTO();
+        BeanUtils.copyProperties(entity, result);
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public void delete(@NonNull Long id) {
+        User entity = userRepository.findById(id).orElse(null);
+        if (null == entity) {
+            throw new PayloadException(messageService.getMessage("error.not.exist"));
+        }
+        userRepository.delete(id);
     }
 
     @Override

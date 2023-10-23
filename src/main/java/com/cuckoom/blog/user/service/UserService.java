@@ -25,6 +25,21 @@ public interface UserService {
     UserDTO add(@NonNull UserDTO dto);
 
     /**
+     * 编辑用户
+     * @param id 用户 ID
+     * @param dto 用户 DTO 实体
+     * @return 结果
+     */
+    @NonNull
+    UserDTO update(@NonNull Long id, @NonNull UserDTO dto);
+
+    /**
+     * 删除用户
+     * @param id 用户 ID
+     */
+    void delete(@NonNull Long id);
+
+    /**
      * 根据登录名查询用户
      * @param userName 登录名
      * @return 结果
