@@ -28,4 +28,16 @@ public class UserUtils {
         return result;
     }
 
+    /**
+     * 将 {@link UserDTO} 实体转化为 {@link User} 实体
+     * @param dto {@link UserDTO} 实体
+     * @return {@link User} 实体
+     */
+    @NonNull
+    public static User convert(@NonNull UserDTO dto) {
+        User result = new User();
+        BeanUtils.copyProperties(dto, result, "passwd");
+        return result;
+    }
+
 }

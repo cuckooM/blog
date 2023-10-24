@@ -8,8 +8,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import com.cuckoom.blog.user.entity.User;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 用户数据访问层接口
@@ -27,12 +26,12 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>,
     User findTopByUserNameAndDeletedFalse(@NonNull String userName);
 
     /**
-     * 逻辑删除用户
-     * @param id 用户 ID
+     * 逻辑删除
+     * @param id ID
      */
     @Transactional
-    @Query("update User set deleted = true where id = ?1")
     @Modifying
+    @Query("update User set deleted = true where id = ?1")
     void delete(@NonNull Long id);
 
 }

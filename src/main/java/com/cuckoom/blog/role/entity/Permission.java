@@ -28,4 +28,8 @@ public class Permission implements Serializable  {
     /** 权限标志 */
     private String key;
 
+    /** 父级权限 */
+    @Column(name = "parent_id")
+    private Long parentId;
+
 }

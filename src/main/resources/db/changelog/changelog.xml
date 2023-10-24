@@ -94,4 +94,10 @@
             UPDATE tbl_role SET name = '管理员' WHERE id = 1;
         </sql>
     </changeSet>
+    <changeSet id="4" author="cuckooM">
+        <sql>
+            -- 权限表增加层级关系
+            ALTER TABLE tbl_permission ADD COLUMN IF NOT EXISTS parent_id BIGINT;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

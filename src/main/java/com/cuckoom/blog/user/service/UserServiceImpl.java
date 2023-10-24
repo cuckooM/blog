@@ -53,15 +53,12 @@ public class UserServiceImpl implements UserService {
     @NonNull
     public UserDTO add(@NonNull UserDTO dto) {
         // 保存数据
-        User entity = new User();
-        BeanUtils.copyProperties(dto, entity, "id", "passwd");
+        User entity = UserUtils.convert(dto);
+        entity.setId(null);
         entity.setPasswd(passwordEncoder.encode(dto.getPasswd()));
         entity.setCreateTime(new Date());
         entity = userRepository.save(entity);
-        // 构造返回值
-        UserDTO result = new UserDTO();
-        BeanUtils.copyProperties(entity, result);
-        return result;
+        return UserUtils.convert(entity);
     }
 
     @Override
@@ -77,10 +74,7 @@ public class UserServiceImpl implements UserService {
             entity.setPasswd(passwordEncoder.encode(dto.getPasswd()));
         }
         entity = userRepository.save(entity);
-        // 构造返回值
-        UserDTO result = new UserDTO();
-        BeanUtils.copyProperties(entity, result);
-        return result;
+        return UserUtils.convert(entity);
     }
 
     @Override
